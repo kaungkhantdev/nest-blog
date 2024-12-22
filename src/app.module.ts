@@ -6,7 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GqlConfig } from './config/graphql_config';
 
 // feature modules
-import { DemoModule } from './modules/demo/demo.module';
+import { CoreModule } from './modules/core/core.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { DemoModule } from './modules/demo/demo.module';
     }),
 
     // feature modules
-    DemoModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
