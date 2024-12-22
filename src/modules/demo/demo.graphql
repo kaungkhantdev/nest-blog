@@ -1,0 +1,24 @@
+type Demo {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input CreateDemoInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateDemoInput {
+  id: Int!
+}
+
+type Query {
+  demos: [Demo]!
+  demo(id: Int!): Demo
+}
+
+type Mutation {
+  createDemo(createDemoInput: CreateDemoInput!): Demo!
+  updateDemo(updateDemoInput: UpdateDemoInput!): Demo!
+  removeDemo(id: Int!): Demo
+}
