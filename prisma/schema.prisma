@@ -9,6 +9,32 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String?  @db.VarChar(255)
+  email      String   @unique @db.VarChar(255)
+  username   String   @unique @db.VarChar(255)
+  avatar     String?  @db.Text
+  bio        String?  @db.Text
+  delFlag    Boolean  @default(false) @map("del_flag")
+  verifyAt   BigInt?  @map("verify_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Otp {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique @db.VarChar(255)
+  otp        String   @db.VarChar(50)
+  expiresAt  BigInt   @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("otps")
 }
