@@ -1,4 +1,4 @@
-import { createTransport, Transporter } from 'nodemailer';
+import { createTransport, Transporter, SendMailOptions } from 'nodemailer';
 import handlebars from 'handlebars';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
@@ -60,4 +60,58 @@ export class Mail {
       console.error(`Error sending email: ${error}`);
     }
   }
+
+  /** Send email service reusable */
+  async sendEmailHtmlReusable(
+    to: string,
+    subject: string,
+    templateVariables: Record<string, string | number>,
+    templateData: string,
+    cc?: string | string[],
+    bcc?: string | string[],
+    documentUrl?: boolean,
+    documentData?: { filename: string; content: any; encoding: 'base64' }[],
+  ): Promise<void> {
+    // Inject template variables into HTML
+    const htmlWithData = this.reusableInjectData(
+      templateData,
+      templateVariables,
+    );
+
+    const mailOptions: SendMailOptions = {
+      from: `kaungkhantzaw235@gmail.com`,
+      to,
+      subject,
+      html: htmlWithData,
+      cc: Array.isArray(cc) ? cc.join(', ') : cc,
+      bcc: Array.isArray(bcc) ? bcc.join(', ') : bcc,
+    };
+
+    if (documentUrl) {
+      try {
+        mailOptions.attachments = documentData;
+      } catch (error) {
+        console.error('Error attaching document:', error);
+      }
+    }
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error(`Error sending email: ${error}`);
+    }
+  }
+
+  public reusableInjectData = (
+    html: string,
+    data: Record<string, string | number>,
+  ): string => {
+    return Object.keys(data).reduce((resultHtml, key) => {
+      const placeholder = `{{data.${key}}}`;
+      return resultHtml.replace(
+        new RegExp(placeholder, 'g'),
+        String(data[key]),
+      );
+    }, html);
+  };
 }

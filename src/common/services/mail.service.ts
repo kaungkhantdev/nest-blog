@@ -12,11 +12,12 @@ export class MailService {
   private readonly mail: Mail;
 
   constructor() {
-    this.host = 'your_host';
-    this.port = 587;
-    this.user = 'your_user';
-    this.pass = 'your_pass';
-    this.service = 'gmail';
+    this.host = process.env.MAIL_HOST;
+    this.port = parseInt(process.env.MAIL_PORT);
+    this.user = process.env.MAIL_USER;
+    this.pass = process.env.MAIL_PASS;
+    this.secure = process.env.MAIL_SECURE === 'true';
+    this.service = process.env.MAIL_SERVICE;
     this.mail = new Mail(
       this.host,
       this.port,
@@ -30,9 +31,22 @@ export class MailService {
   async sendEmail(
     to: string,
     subject: string,
-    templateVariables: object,
-    templateName: string,
+    templateVariables: Record<string, string | number>,
+    templateData: string,
+    cc?: string | string[],
+    bcc?: string | string[],
+    documentUrl?: boolean,
+    documentData?: { filename: string; content: any; encoding: 'base64' }[],
   ): Promise<void> {
-    await this.mail.sendEmail(to, subject, templateVariables, templateName);
+    await this.mail.sendEmailHtmlReusable(
+      to,
+      subject,
+      templateVariables,
+      templateData,
+      cc,
+      bcc,
+      documentUrl,
+      documentData,
+    );
   }
 }

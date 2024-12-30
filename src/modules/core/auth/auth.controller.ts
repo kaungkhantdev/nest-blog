@@ -9,7 +9,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   // Get OTP via Email
-  @Post('otp')
+  @Post('get-otp')
   async getOtpViaEmail(@Body() input: AuthOtpRequestDto) {
     try {
       const data = await this.authService.getOtpViaEmail(input.email);
